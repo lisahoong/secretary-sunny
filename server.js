@@ -85,7 +85,7 @@ app.get('/oauthcallback', (req, res) => {
         process.env.DOMAIN + '/oauthcallback'
     );
 
-    oauth2Client.getToken(req.query.code, async (err, tokens) => {
+    oauth2Client.getToken(req.query.code, function (err, tokens) {
         // Now tokens contains an access_token and an optional refresh_token. Save them.
         if (!err) {
             oauth2Client.setCredentials(tokens);
@@ -133,7 +133,7 @@ app.post('/webhook', function(req, res) {
     }
 });
 
-const handleReceivedMessage = async (event) => {
+const handleReceivedMessage = async function(event) {
     console.log('event: ', event);
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
