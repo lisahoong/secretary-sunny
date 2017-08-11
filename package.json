@@ -1,6 +1,6 @@
 {
   "name": "fb-bot",
-  "version": "1.0.0",
+  "version": "0.2.5",
   "description": "",
   "main": "server.js",
   "scripts": {
