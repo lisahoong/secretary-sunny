@@ -1,11 +1,11 @@
 {
   "name": "fb-bot",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,8 +14,10 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
     "googleapis": "^20.1.0",
+    "moment": "^2.18.1",
     "mongoose": "^4.11.6",
     "nightmare": "^2.10.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "xmldom": "^0.1.27"
   }
 }

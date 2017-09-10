@@ -2,22 +2,22 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
 
 const userSchema = new mongoose.Schema({
-    fullName: {
+    firstName: {
         type: String,
         required: true
     },
-    slackId: {
+    lastName: {
         type: String,
         required: true
     },
-    slackName: {
+    fbUserId: {
         type: String,
         required: true
     },
-    slackDmChannelId: String,
     google: Object,
     email: String,
-    pending: String
+    pending: Object,
+    currentReminder: Object
 })
 
 const User = mongoose.model('User', userSchema);
