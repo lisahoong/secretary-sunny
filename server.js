@@ -207,8 +207,8 @@ try {
                             defineWord(str[1], senderID);
                         } else if (agentResponse.data.result.parameters.action === 'synonym') {
 
-                        } else {
-
+                        } else if (agentResponse.data.result.parameters.action === 'dj') {
+                            spotify(user, senderID);
                         }
                     } else {
                         callSendAPI(createMessage(senderID, agentResponse.data.result.fulfillment.speech))
@@ -229,6 +229,42 @@ try {
     }
 }
 
+app.get('/spotifyoauthcallback', async (req, res) => {
+    console.log(req.body);
+    console.log('QUERY: ', req.query.code);
+    var code = req.query.code;
+    try {
+        var user = await User.findById(req.query.state);
+        axios.post('https://accounts.spotify.com/api/token', {
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: `${process.env.DOMAIN}/spotifyoauthcallback`,
+            client_id: process.env.SPOTIFY_ID,
+            client_secret: process.env.SPOTIFY_SECRET
+        }
+    ).then((resp) => {
+        console.log(resp);
+        res.send('Thanks for connecting your Spotify account!')
+    })
+    }
+    catch(err) {
+        console.log('error in spotify: ', err);
+    }
+})
+
+const spotify = async(user, senderID) => {
+    if (!user.spotify) {
+        var client = `?client_id=${process.env.SPOTIFY_ID}&`;
+        var response_type = `response_type=code&`;
+        var redirect_uri = `redirect_uri=${process.env.DOMAIN}/spotifyoauthcallback&`;
+        var scope = encodeURIComponent('scope=playlist-read-private user-modify-playback-state user-read-recently-played user-read-currently-playing&')
+        var state = 'state=' + encodeURIComponent(user._id);
+        var msg = `Please grant me access to your Spotify playlists so I can wicka wicka DJ: https://accounts.spotify.com/authorize/${client}${response_type}${redirect_uri}${scope}${state}`
+        var messageData = createMessage(senderID, msg);
+        callSendAPI(messageData);
+    }
+}
+
 function defineWord(word, senderID) {
     axios.get(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${process.env.DICTIONARY_KEY}`)
     .then((resp) => {
@@ -239,7 +275,11 @@ function defineWord(word, senderID) {
         Object.keys(xmlDoc.getElementsByTagName("dt")['0'].childNodes)
         .forEach((def) => {
             if (xmlDoc.getElementsByTagName("dt")['0'].childNodes[def].data) {
-                definitions.push(num.toString() + '. ' + xmlDoc.getElementsByTagName("dt")['0'].childNodes[def].data + '\n');
+                var givenDef = xmlDoc.getElementsByTagName("dt")['0'].childNodes[def].data;
+                if (givenDef[0] === ':') {
+                    givenDef = givenDef.substring(1);
+                }
+                definitions.push(num.toString() + '. ' + givenDef + '\n');
                 num++;
             }
 

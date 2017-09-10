@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     google: Object,
+    spotify: Object,
     email: String,
     pending: Object,
     currentReminder: Object
